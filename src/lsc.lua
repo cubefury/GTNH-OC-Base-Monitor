@@ -125,7 +125,7 @@ function lsc:new(address, useMedian, wirelessMode)
 
     self.wirelessStored = parseSensorInformation(sensorInformation[19])
 
-    if self.lastWirelessStored ~= self.wirelessStored and self.stored >= 10 then
+    if self.lastWirelessStored ~= self.wirelessStored and self.wirelessStored >= 10 then
       local delta = self.wirelessStored - self.lastWirelessStored
       local time = computer.uptime() - self.lastReadWirelessStored
 
