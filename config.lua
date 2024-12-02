@@ -14,7 +14,7 @@ local redstoneBundledController = require("src.controllers.redstone-bundled-cont
 
 local config = {
   logger = loggerLib:newFormConfig({
-    name = "Infusion Control",
+    name = "LSC Control",
     timeZone = 3, -- Your time zone
     handlers = {
       discordLoggerHandler:newFormConfig({
