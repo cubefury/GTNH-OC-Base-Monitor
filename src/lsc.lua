@@ -115,15 +115,15 @@ function lsc:new(address, useMedian, wirelessMode)
 
     local totalCapacity = 0
 
-    totalCapacity = totalCapacity + capacitors[1] * parseSensorInformation(sensorInformation[15])
-    totalCapacity = totalCapacity + capacitors[2] * parseSensorInformation(sensorInformation[16])
-    totalCapacity = totalCapacity + capacitors[3] * parseSensorInformation(sensorInformation[17])
-    totalCapacity = totalCapacity + capacitors[4] * parseSensorInformation(sensorInformation[18])
+    totalCapacity = totalCapacity + capacitors[1] * parseSensorInformation(sensorInformation[19])
+    totalCapacity = totalCapacity + capacitors[2] * parseSensorInformation(sensorInformation[20])
+    totalCapacity = totalCapacity + capacitors[3] * parseSensorInformation(sensorInformation[21])
+    totalCapacity = totalCapacity + capacitors[4] * parseSensorInformation(sensorInformation[22])
 
     self.stored = parseSensorInformation(sensorInformation[2])
     self.capacity = totalCapacity * 20 * 60 * 5
 
-    self.wirelessStored = parseSensorInformation(sensorInformation[19])
+    self.wirelessStored = parseSensorInformation(sensorInformation[23])
 
     if self.lastWirelessStored ~= self.wirelessStored and self.wirelessStored >= 10 then
       local delta = self.wirelessStored - self.lastWirelessStored
