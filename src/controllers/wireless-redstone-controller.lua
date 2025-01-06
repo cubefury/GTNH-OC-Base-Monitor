@@ -1,4 +1,4 @@
-local component = require("component")
+local componentDiscoverLib = require("lib.component-discover-lib")
 
 ---@class WirelessRedstoneControllerConfig
 ---@field address string
@@ -33,7 +33,7 @@ function wirelessRedstoneController:new(address, frequency, name, enableEuPercen
   obj.disableEuPercent = disableEuPercent
   obj.frequency = frequency
 
-  obj.proxy = component.proxy(address, "redstone")
+  obj.proxy = componentDiscoverLib.discoverProxy(address, name.." redstone", "redstone")
 
   ---Get machine state
   ---@return boolean

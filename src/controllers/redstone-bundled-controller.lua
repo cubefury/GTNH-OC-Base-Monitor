@@ -1,9 +1,9 @@
-local component = require("component")
+local componentDiscoverLib = require("lib.component-discover-lib")
 
 ---@class RedstoneBundledControllerConfig
 ---@field address string
 ---@field side number
----@field color string
+---@field color number
 ---@field name string
 ---@field enableEuPercent number
 ---@field disableEuPercent number
@@ -20,7 +20,7 @@ end
 ---Crate new RedstoneBundledController object
 ---@param address string
 ---@param side number
----@param color string
+---@param color number
 ---@param name string
 ---@param enableEuPercent number
 ---@param disableEuPercent number
@@ -36,7 +36,7 @@ function redstoneBundledController:new(address, side, color, name, enableEuPerce
   obj.side = side
   obj.color = color
 
-  obj.proxy = component.proxy(address, "redstone")
+  obj.proxy = componentDiscoverLib.discoverProxy(address, name.." redstone", "redstone")
 
   ---Get machine state
   ---@return boolean
@@ -49,7 +49,7 @@ function redstoneBundledController:new(address, side, color, name, enableEuPerce
   ---@return boolean
   function obj:setState(state)
     local signal = (state and 15 or 0)
-    return self.proxy.setBundledOutput(self.side, self.color, signal)
+    return self.proxy.setBundledOutput(self.side, self.color, signal) == 15
   end
 
   setmetatable(obj, self)

@@ -1,4 +1,4 @@
-local component = require("component")
+local componentDiscoverLib = require("lib.component-discover-lib")
 
 ---@class GtnhControllerConfig
 ---@field address string
@@ -31,7 +31,7 @@ function gtnhController:new(address, name, enableEuPercent, disableEuPercent)
   obj.enableEuPercent = enableEuPercent
   obj.disableEuPercent = disableEuPercent
 
-  obj.proxy = component.proxy(address, "gt_machine")
+  obj.proxy = componentDiscoverLib.discoverProxy(address, name.." gt machine", "gt_machine")
 
   ---Get machine state
   ---@return boolean
