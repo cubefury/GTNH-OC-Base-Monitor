@@ -10,7 +10,12 @@ local scrollList = require("lib.gui-widgets.scroll-list")
 package.loaded.config = nil
 local config = require("config")
 
-local program = programLib:new(config.logger)
+local version = require("version")
+
+local repository = "Navatusein/GTNH-OC-LSC-Control"
+local archiveName = "LSCControl"
+
+local program = programLib:new(config.logger, config.enableAutoUpdate, version, repository, archiveName)
 local gui = guiLib:new(program)
 
 local logo = {
@@ -29,7 +34,7 @@ local localModeTemplate = {
   foreground = gui.palette.white,
   widgets = {
     chargeBar = chargeBar:new("percent", "charge", 5, 8),
-    generatorList = scrollList:new("generatorStatuses", keyboard.keys.up, keyboard.keys.down)
+    generatorList = scrollList:new("generatorList", "generatorStatuses", keyboard.keys.up, keyboard.keys.down)
   },
   lines = {
     "Charge: $percent:s,%.2f$% $stored:mu,EU$ / $capacity:mu,EU$",
@@ -40,7 +45,7 @@ local localModeTemplate = {
       "?(percent == 0 and charge == 0)|&red;@c;Completely discharged|?"..
       "?(percent < 99.9 and charge > 0)|Time to full: &green;$chargeLeft:t,2$|?"..
       "?(percent < 99.9 and charge < 0)|Time to empty: &red;$chargeLeft:t,2$|?"..
-      "?(percent < 99.9 and charge == 0)|@c;Idle|?",
+      "?(percent > 0 and percent < 99.9 and charge == 0)|@c;Idle|?",
     "",
     "#generatorList#",
     "#generatorList#",
@@ -55,7 +60,7 @@ local wirelessModeTemplate = {
   foreground = gui.palette.white,
   widgets = {
     chargeBar = chargeBar:new("percent", "charge", 5, 8),
-    generatorList = scrollList:new("generatorStatuses", keyboard.keys.up, keyboard.keys.down)
+    generatorList = scrollList:new("generatorList", "generatorStatuses", keyboard.keys.up, keyboard.keys.down)
   },
   lines = {
     "Wireless Charge: $wirelessStored:mu,EU$",
@@ -64,8 +69,12 @@ local wirelessModeTemplate = {
     "Charge: $percent:s,%.2f$% $stored:mu,EU$ / $capacity:mu,EU$",
     "#chargeBar#",
     "@c;?charge >=0 |&green;|&red;?$charge:mu,EU/t$",
+    "?(percent >= 99.9 and charge == 0)|&green;@c;Fully charged|?"..
+      "?(percent == 0 and charge == 0)|&red;@c;Completely discharged|?"..
+      "?(percent < 99.9 and charge > 0)|Time to full: &green;$chargeLeft:t,2$|?"..
+      "?(percent < 99.9 and charge < 0)|Time to empty: &red;$chargeLeft:t,2$|?"..
+      "?(percent > 0 and percent < 99.9 and charge == 0)|@c;Idle|?",
     "",
-    "#generatorList#",
     "#generatorList#",
     "#generatorList#",
     "#generatorList#",
@@ -76,6 +85,7 @@ local wirelessModeTemplate = {
 
 local function init()
   gui:setTemplate(config.lsc.wirelessMode and wirelessModeTemplate or localModeTemplate)
+  config.lsc:init()
 end
 
 local function loop()

@@ -1,4 +1,4 @@
-local component = require("component")
+local componentDiscoverLib = require("lib.component-discover-lib")
 
 ---@class RedstoneControllerConfig
 ---@field address string
@@ -33,7 +33,7 @@ function redstoneController:new(address, side, name, enableEuPercent, disableEuP
   obj.disableEuPercent = disableEuPercent
   obj.side = side
 
-  obj.proxy = component.proxy(address, "redstone")
+  obj.proxy = componentDiscoverLib.discoverProxy(address, name.." redstone", "redstone")
 
   ---Get machine state
   function obj:getState()

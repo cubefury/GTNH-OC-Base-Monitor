@@ -2,7 +2,7 @@
 -- Author: CAHCAHbl4
 -- Edit: Navatusein
 -- License: MIT
--- Version: 2.5
+-- Version: 2.7
 
 local component = require("component")
 local term = require("term")
@@ -31,9 +31,19 @@ local gpu = component.gpu
 ---@return table
 local function split(string, delimiter)
   local splitted = {}
-  for match in string:gmatch("([^" .. delimiter .. "]+)") do
+  local lastEnd = 1
+
+  for match in string:gmatch("(.-)"..delimiter) do
     table.insert(splitted, match)
+    lastEnd = #match + #delimiter + 1
   end
+
+  local remaining = string:sub(lastEnd)
+
+  if remaining ~= "" then
+      table.insert(splitted, remaining)
+  end
+
   return splitted
 end
 
@@ -278,8 +288,30 @@ function gui:new(program)
     red = 0xCC0000,
     green = 0x009200,
     blue = 0x0000C0,
+    lightBlue = 0xADDFFF,
     yellow = 0xFFDB00,
-    pink = 0xFF007F
+    pink = 0xFF007F,
+    lime = 0x00FF00,
+    magenta = 0xFF00FF,
+    cyan = 0x00FFFF,
+    greenYellow = 0xADFF2F,
+    darkOliveGreen = 0x556B2F,
+    indigo = 0x4B0082,
+    purple = 0x800080,
+    electricBlue = 0x00A6FF,
+    dodgerBlue = 0x1E90FF,
+    steelBlue = 0x4682B4,
+    darkSlateBlue = 0x483D8B,
+    midnightBlue = 0x191970,
+    darkBlue = 0x000080,
+    darkOrange = 0xFFA500,
+    rosyBrown = 0xBC8F8F,
+    golden = 0xDAA520,
+    maroon = 0x800000,
+    gray = 0x3C5B72,
+    lightGray = 0xA9A9A9,
+    darkGray = 0x181828,
+    darkSlateGrey = 0x2F4F4F
   }
 
   ---Set template
