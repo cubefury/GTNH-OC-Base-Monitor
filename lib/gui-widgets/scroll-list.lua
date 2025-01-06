@@ -1,37 +1,26 @@
 -- Scroll List Widget
 -- Author: Navatusein
 -- License: MIT
--- Version: 1.2
-
----@class ScrollListWidgetConfig
----@field valueName string
----@field scrollUpKeyCode number
----@field scrollDownKeyCode number
+-- Version: 1.0
 
 local scrollList = {}
 
----Crate new ScrollListWidget object from config
----@param config ScrollListWidgetConfig
----@return ScrollListWidget
-function scrollList:newFormConfig(config)
-  return self:new(config.valueName, config.scrollUpKeyCode, config.scrollDownKeyCode)
-end
-
 ---Crate new ScrollListWidget object
+---@param name string
 ---@param valueName string
 ---@param scrollUpKeyCode number
 ---@param scrollDownKeyCode number
 ---@return ScrollListWidget
-function scrollList:new(valueName, scrollUpKeyCode, scrollDownKeyCode)
+function scrollList:new(name, valueName, scrollUpKeyCode, scrollDownKeyCode)
   ---@class ScrollListWidget: Widget
   local obj = {}
 
+  obj.name = name
   obj.valueName = valueName
   obj.scrollUpKeyCode = scrollUpKeyCode
   obj.scrollDownKeyCode = scrollDownKeyCode
 
   obj.template = nil
-  obj.name = nil
 
   obj.startLine = 0
   obj.size = 0
@@ -41,9 +30,8 @@ function scrollList:new(valueName, scrollUpKeyCode, scrollDownKeyCode)
 
   ---Init
   ---@param template Template
-  function obj:init(template, name)
+  function obj:init(template)
     self.template = template
-    self.name = name
 
     for index, line in pairs(self.template.lines) do
       if string.find(line, self.name) then
@@ -76,6 +64,7 @@ function scrollList:new(valueName, scrollUpKeyCode, scrollDownKeyCode)
 
     local index = y - self.startLine + 1 + self.offset
     local string = tostring(list[index] or "") 
+    -- local spaces = string.rep(" ", self.template.width - 2 - #string.gsub(string, "&([^;]+);", ""))
     local itemPerOffset = self.maxOffset / (self.size - 1)
 
     if self.maxOffset > 0 and math.floor(self.offset / itemPerOffset) == (y - self.startLine) then
