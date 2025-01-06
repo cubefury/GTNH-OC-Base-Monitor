@@ -1,26 +1,31 @@
-local component = require("component")
 local computer = require("computer")
 
 local listLib = require("lib.list-lib")
+local componentDiscoverLib = require("lib.component-discover-lib")
+local gtSensorParserLib = require("lib.gt-sensor-parser")
+
+---@class SensorInformationFields
+---@field storedEu integer
+---@field capacity integer
+---@field avgEuIn integer
+---@field avgEuOut integer
+---@field capacitorUHV integer
+---@field capacitorUEV integer
+---@field capacitorUIV integer
+---@field capacitorUMV integer
+---@field wirelessStored integer
 
 ---@class LSCConfig
----@field address string
 ---@field useMedian boolean
 ---@field wirelessMode boolean
-
----Parse information from SensorInformation
----@param value string
----@return number?
-local function parseSensorInformation(value)
-  local str = string.gsub(string.match(value, "[^§%d][%d,]+"), "[%D]", "")
-  return tonumber(str)
-end
+---@field version "custom"|"2.6"|"2.7"
+---@field customLines SensorInformationFields
 
 local capacitors = {
-  10000000000,
-  1000000000000,
-  100000000000000,
-  10000000000000000
+  UHV = 10000000000,
+  UEV = 1000000000000,
+  UIV = 100000000000000,
+  UMV = 10000000000000000
 }
 
 local lsc = {}
@@ -29,25 +34,56 @@ local lsc = {}
 ---@param config LSCConfig
 ---@return LSC
 function lsc:newFormConfig(config)
-  return self:new(config.address, config.useMedian, config.wirelessMode)
+  return self:new(config.useMedian, config.wirelessMode, config.version, config.customLines)
 end
 
 ---Crate new LSC object
----@param address string
 ---@param useMedian boolean
+---@param wirelessMode boolean
+---@param version "custom"|"2.6"|"2.7"
+---@param customLines SensorInformationFields
 ---@return LSC
-function lsc:new(address, useMedian, wirelessMode)
+function lsc:new(useMedian, wirelessMode, version, customLines)
 
   ---@class LSC
   local obj = {}
 
-  obj.proxy = component.proxy(address, "gt_machine")
+  obj.proxy = nil
+  obj.gtSensorParser = nil
 
   obj.wirelessMode = wirelessMode
   obj.useMedian = useMedian
 
   obj.inputHistory = listLib:new(20)
   obj.outputHistory = listLib:new(20)
+
+  obj.version = version
+
+  obj.lines = {
+    ["custom"] = customLines,
+    ["2.6"] = {
+      storedEu = 2,
+      capacity = 5,
+      avgEuIn = 10,
+      avgEuOut = 11,
+      capacitorUHV = 15,
+      capacitorUEV = 16,
+      capacitorUIV = 17,
+      capacitorUMV = 18,
+      wirelessStored = 19
+    },
+    ["2.7"] = {
+      storedEu = 2,
+      capacity = 5,
+      avgEuIn = 10,
+      avgEuOut = 11,
+      capacitorUHV = 19,
+      capacitorUEV = 20,
+      capacitorUIV = 21,
+      capacitorUMV = 22,
+      wirelessStored = 23
+    }
+  }
 
   obj.stored = 0
   obj.capacity = 0
@@ -63,8 +99,21 @@ function lsc:new(address, useMedian, wirelessMode)
   obj.lastWirelessStored = 0
   obj.lastReadWirelessStored = 0
 
+  ---Init
+  function obj:init()
+    self.proxy = componentDiscoverLib.discoverGtMachine("multimachine.supercapacitor")
+    self.gtSensorParser = gtSensorParserLib:new(self.proxy)
+  end
+
   ---Update
   function obj:update()
+    self.gtSensorParser:getInformation()
+
+    self.inputHistory:pushBack(self.gtSensorParser:getNumber(self.lines[self.version].avgEuIn))
+    self.outputHistory:pushBack(self.gtSensorParser:getNumber(self.lines[self.version].avgEuOut))
+
+    self.stored = self.gtSensorParser:getNumber(self.lines[self.version].storedEu)
+
     if self.wirelessMode then
       self:updateWireless()
     else
@@ -98,32 +147,20 @@ function lsc:new(address, useMedian, wirelessMode)
   end
 
   function obj:updateLocal()
-    local sensorInformation = self.proxy.getSensorInformation()
-
-    self.inputHistory:pushBack(parseSensorInformation(sensorInformation[10]))
-    self.outputHistory:pushBack(parseSensorInformation(sensorInformation[11]))
-
-    self.stored = parseSensorInformation(sensorInformation[2])
-    self.capacity = parseSensorInformation(sensorInformation[5])
+    self.capacity = self.gtSensorParser:getNumber(self.lines[self.version].capacity)
   end
 
   function obj:updateWireless()
-    local sensorInformation = self.proxy.getSensorInformation()
+    local capacity = 0
 
-    self.inputHistory:pushBack(parseSensorInformation(sensorInformation[10]))
-    self.outputHistory:pushBack(parseSensorInformation(sensorInformation[11]))
+    capacity = capacity + capacitors["UHV"] * self.gtSensorParser:getNumber(self.lines[self.version].capacitorUHV)
+    capacity = capacity + capacitors["UEV"] * self.gtSensorParser:getNumber(self.lines[self.version].capacitorUEV)
+    capacity = capacity + capacitors["UIV"] * self.gtSensorParser:getNumber(self.lines[self.version].capacitorUIV)
+    capacity = capacity + capacitors["UMV"] * self.gtSensorParser:getNumber(self.lines[self.version].capacitorUMV)
 
-    local totalCapacity = 0
+    self.capacity = capacity * 20 * 60 * 5
 
-    totalCapacity = totalCapacity + capacitors[1] * parseSensorInformation(sensorInformation[19])
-    totalCapacity = totalCapacity + capacitors[2] * parseSensorInformation(sensorInformation[20])
-    totalCapacity = totalCapacity + capacitors[3] * parseSensorInformation(sensorInformation[21])
-    totalCapacity = totalCapacity + capacitors[4] * parseSensorInformation(sensorInformation[22])
-
-    self.stored = parseSensorInformation(sensorInformation[2])
-    self.capacity = totalCapacity * 20 * 60 * 5
-
-    self.wirelessStored = parseSensorInformation(sensorInformation[23])
+    self.wirelessStored = self.gtSensorParser:getNumber(self.lines[self.version].wirelessStored)
 
     if self.lastWirelessStored ~= self.wirelessStored and self.wirelessStored >= 10 then
       local delta = self.wirelessStored - self.lastWirelessStored
