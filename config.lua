@@ -13,6 +13,8 @@ local redstoneController = require("src.controllers.redstone-controller")
 local redstoneBundledController = require("src.controllers.redstone-bundled-controller")
 
 local config = {
+  enableAutoUpdate = true, -- Enable auto update on start
+
   logger = loggerLib:newFormConfig({
     name = "LSC Control",
     timeZone = 3, -- Your time zone
@@ -31,9 +33,20 @@ local config = {
   }),
 
   lsc = lsc:newFormConfig({
-    address = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", -- Address of adapter which connected to LSC 
     useMedian = false, -- Use median in calculations
-    wirelessMode = true -- Use wireless network mode
+    wirelessMode = false, -- Use wireless network mode
+    version = "2.7", -- Your game version allow ["2.6", "2.7", "custom"]
+    customLines = { -- Lines number in SensorInformation for version ["custom"]
+      storedEu = 2, -- EU Stored line
+      capacity = 5, -- Total Capacity line
+      avgEuIn = 10, -- Avg EU IN: 0 (last 5 seconds) line
+      avgEuOut = 11, -- Avg EU OUT: 0 (last 5 seconds) line
+      capacitorUHV = 19, -- UHV Capacitors detected line
+      capacitorUEV = 20, -- UEV Capacitors detected line
+      capacitorUIV = 21, -- UIV Capacitors detected line
+      capacitorUMV = 22, -- UMV Capacitors detected line
+      wirelessStored = 23 -- Total wireless EU line
+    },
   }),
 
   generators = { -- List of generators to control 
