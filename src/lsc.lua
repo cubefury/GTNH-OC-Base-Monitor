@@ -66,11 +66,11 @@ function lsc:new(useMedian, wirelessMode, version, customLines)
       capacity = 5,
       avgEuIn = 10,
       avgEuOut = 11,
-      capacitorUHV = 15,
-      capacitorUEV = 16,
-      capacitorUIV = 17,
-      capacitorUMV = 18,
-      wirelessStored = 19
+      capacitorUHV = 14,
+      capacitorUEV = 15,
+      capacitorUIV = 16,
+      capacitorUMV = 17,
+      wirelessStored = 18
     },
     ["2.7"] = {
       storedEu = 2,
