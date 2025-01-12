@@ -1,10 +1,11 @@
 descriptor:
   name: LSC Control
-  description: Program for managing a battery, generators connected to it and large energy consumers
+  description: Configuration for program LSC Control
   repositoryLink: https://github.com/Navatusein/GTNH-OC-LSC-Control
   fieldGroups:
     - key: logger
       name: Logger
+      defaultOpen: true
       fields:
         - key: name
           type: string
@@ -27,6 +28,7 @@ descriptor:
 
     - key: lsc
       name: LSC
+      defaultOpen: true
       fields:
         - key: useMedian
           type: boolean
@@ -57,89 +59,367 @@ descriptor:
 
     - key: lscCustomLines
       name: Sensor custom lines
+      defaultOpen: false
       description: Only change values here if you have specified a custom version
       fields:
-      - key: storedEu
-        type: integer
-        optional: true
-        default: 2
-        label: EU Stored Line
-        description: EU Stored line
+        - key: storedEu
+          type: integer
+          optional: true
+          default: 2
+          label: EU Stored Line
+          description: EU Stored line
 
-      - key: capacity
-        type: integer
-        optional: true
-        default: 5
-        label: Capacity Line
-        description: Total Capacity line
+        - key: capacity
+          type: integer
+          optional: true
+          default: 5
+          label: Capacity Line
+          description: Total Capacity line
 
-      - key: avgEuIn
-        type: integer
-        optional: true
-        default: 10
-        label: Avg EU In Line
-        description: "Avg EU IN: 0 (last 5 seconds) line"
+        - key: avgEuIn
+          type: integer
+          optional: true
+          default: 10
+          label: Avg EU In Line
+          description: "Avg EU IN: 0 (last 5 seconds) line"
 
-      - key: avgEuOut
-        type: integer
-        optional: true
-        default: 11
-        label: Avg EU Out Line
-        description: "Avg EU OUT: 0 (last 5 seconds) line"
+        - key: avgEuOut
+          type: integer
+          optional: true
+          default: 11
+          label: Avg EU Out Line
+          description: "Avg EU OUT: 0 (last 5 seconds) line"
 
-      - key: capacitorUHV
-        type: integer
-        optional: true
-        default: 19
-        label: UHV Capacitors Count Line
-        description: UHV Capacitors detected line
+        - key: capacitorUHV
+          type: integer
+          optional: true
+          default: 19
+          label: UHV Capacitors Count Line
+          description: UHV Capacitors detected line
 
-      - key: capacitorUEV
-        type: integer
-        optional: true
-        default: 20
-        label: UEV Capacitors Count Line
-        description: UEV Capacitors detected line
+        - key: capacitorUEV
+          type: integer
+          optional: true
+          default: 20
+          label: UEV Capacitors Count Line
+          description: UEV Capacitors detected line
 
-      - key: capacitorUIV
-        type: integer
-        optional: true
-        default: 21
-        label: UIV Capacitors Count Line
-        description: UIV Capacitors detected line
+        - key: capacitorUIV
+          type: integer
+          optional: true
+          default: 21
+          label: UIV Capacitors Count Line
+          description: UIV Capacitors detected line
 
-      - key: capacitorUMV
-        type: integer
-        optional: true
-        default: 22
-        label: UMV Capacitors Count Line
-        description: UMV Capacitors detected line
+        - key: capacitorUMV
+          type: integer
+          optional: true
+          default: 22
+          label: UMV Capacitors Count Line
+          description: UMV Capacitors detected line
 
-      - key: wirelessStored
-        type: integer
-        optional: true
-        default: 23
-        label: Wireless Stored Line
-        description: Total wireless EU line
+        - key: wirelessStored
+          type: integer
+          optional: true
+          default: 23
+          label: Wireless Stored Line
+          description: Total wireless EU line
+
+    - key: generators
+      name: Generators
+      defaultOpen: true
+      description: List of generators to control
+      fields:
+        - key: generators
+          type: multipleObjectList
+          optional: true
+          label: Create Generator
+          description: Create new generator config
+          useSpaces: true
+          itemLabel: Generator
+          objects:
+            - key: redstoneBundledController
+              label: Redstone Bundled Controller
+              description: Controller for control with redstone bundled cable
+              fields:
+                - key: address
+                  type: address
+                  label: Redstone IO address
+                  description: Address of redstone io
+
+                - key: name
+                  type: string
+                  label: Name
+                  description: Name of generator
+
+                - key: side
+                  type: side
+                  label: Side
+                  description: Side with cable
+
+                - key: color
+                  type: color
+                  label: Color
+                  description: Color of cable
+
+                - key: enableEuPercent
+                  type: integer
+                  min: 0
+                  max: 100
+                  label: Enable EU Percent
+                  description: EU percent at which the generator switches on
+
+                - key: disableEuPercent
+                  type: integer
+                  min: 0
+                  max: 100
+                  label: Disable EU Percent
+                  description: EU percent at which the generator switches off
+
+              objectTemplate: |
+                redstoneBundledController:newFormConfig({ -- Controller for control with redstone bundled cable
+                  address = "<field>address</field>", -- Address of redstone IO
+                  side = <field>side</field>, -- Side of redstone IO to which connected bundled cable
+                  color = <field>color</field>, -- Color of bundled cable line
+                  name = "<field>name</field>", -- Name of generator
+                  enableEuPercent = <field>enableEuPercent</field>, -- EU percent (0 - 100) at which the generator switches on
+                  disableEuPercent = <field>disableEuPercent</field> -- EU percent (0 - 100) at which the generator switches off
+                }),
+
+            - key: redstoneController
+              label: Redstone Controller
+              description: Controller for control with redstone cable
+              fields:
+                - key: address
+                  type: address
+                  label: Redstone IO address
+                  description: Address of redstone io
+
+                - key: name
+                  type: string
+                  label: Name
+                  description: Name of generator
+
+                - key: side
+                  type: side
+                  label: Side
+                  description: Side with cable
+
+                - key: enableEuPercent
+                  type: integer
+                  min: 0
+                  max: 100
+                  label: Enable EU Percent
+                  description: EU percent at which the generator switches on
+
+                - key: disableEuPercent
+                  type: integer
+                  min: 0
+                  max: 100
+                  label: Disable EU Percent
+                  description: EU percent at which the generator switches off
+
+              objectTemplate: |
+                redstoneController:newFormConfig({ -- Controller for control with redstone cable
+                  address = "<field>address</field>", -- Address of redstone IO
+                  side = <field>side</field>, -- Side of redstone IO to which connected redstone
+                  name = "<field>name</field>", -- Name of generator
+                  enableEuPercent = <field>enableEuPercent</field>, -- EU percent (0 - 100) at which the generator switches on
+                  disableEuPercent = <field>disableEuPercent</field> -- EU percent (0 - 100) at which the generator switches off
+                }),
+
+            - key: gtnhController
+              label: Direct Controller
+              description: Controller for direct control of the generator
+              fields:
+                - key: address
+                  type: address
+                  label: Machine address
+                  description: Address of adapter which connected to gtnh generator
+
+                - key: name
+                  type: string
+                  label: Name
+                  description: Name of generator
+
+                - key: enableEuPercent
+                  type: integer
+                  min: 0
+                  max: 100
+                  label: Enable EU Percent
+                  description: EU percent at which the generator switches on
+
+                - key: disableEuPercent
+                  type: integer
+                  min: 0
+                  max: 100
+                  label: Disable EU Percent
+                  description: EU percent at which the generator switches off
+
+              objectTemplate: |
+                gtnhController:newFormConfig({ -- Controller for direct control of the generator
+                  address = "<field>address</field>", -- Address of adapter which connected to gtnh generator
+                  name = "<field>name</field>", -- Name of generator
+                  enableEuPercent = <field>enableEuPercent</field>, -- EU percent (0 - 100) at which the generator switches on
+                  disableEuPercent = <field>disableEuPercent</field> -- EU percent (0 - 100) at which the generator switches off
+                }),
+
+    - key: machines
+      name: Machines
+      defaultOpen: true
+      description: List of machines to control
+      fields:
+        - key: machines
+          type: multipleObjectList
+          optional: true
+          label: Create Machine
+          description: Create new machines config
+          useSpaces: true
+          itemLabel: Machine
+          objects:
+            - key: redstoneBundledController
+              label: Redstone Bundled Controller
+              description: Controller for control with redstone bundled cable
+              fields:
+                - key: address
+                  type: address
+                  label: Redstone IO address
+                  description: Address of redstone io
+
+                - key: name
+                  type: string
+                  label: Name
+                  description: Name of machine
+
+                - key: side
+                  type: side
+                  label: Side
+                  description: Side with cable
+
+                - key: color
+                  type: color
+                  label: Color
+                  description: Color of cable
+
+                - key: enableEuPercent
+                  type: integer
+                  min: 0
+                  max: 100
+                  label: Enable EU Percent
+                  description: EU percent at which the machine switches on
+
+                - key: disableEuPercent
+                  type: integer
+                  min: 0
+                  max: 100
+                  label: Disable EU Percent
+                  description: EU percent at which the machine switches off
+
+              objectTemplate: |
+                redstoneBundledController:newFormConfig({ -- Controller for control with redstone bundled cable
+                  address = "<field>address</field>", -- Address of redstone IO
+                  side = <field>side</field>, -- Side of redstone IO to which connected bundled cable
+                  color = <field>color</field>, -- Color of bundled cable line
+                  name = "<field>name</field>", -- Name of machine
+                  enableEuPercent = <field>enableEuPercent</field>, -- EU percent (0 - 100) at which the machine switches on
+                  disableEuPercent = <field>disableEuPercent</field> -- EU percent (0 - 100) at which the machine switches off
+                }),
+
+            - key: redstoneController
+              label: Redstone Controller
+              description: Controller for control with redstone cable
+              fields:
+                - key: address
+                  type: address
+                  label: Redstone IO address
+                  description: Address of redstone io
+
+                - key: name
+                  type: string
+                  label: Name
+                  description: Name of machine
+
+                - key: side
+                  type: side
+                  label: Side
+                  description: Side with cable
+
+                - key: enableEuPercent
+                  type: integer
+                  min: 0
+                  max: 100
+                  label: Enable EU Percent
+                  description: EU percent at which the machine switches on
+
+                - key: disableEuPercent
+                  type: integer
+                  min: 0
+                  max: 100
+                  label: Disable EU Percent
+                  description: EU percent at which the machine switches off
+
+              objectTemplate: |
+                redstoneController:newFormConfig({ -- Controller for control with redstone cable
+                  address = "<field>address</field>", -- Address of redstone IO
+                  side = <field>side</field>, -- Side of redstone IO to which connected redstone
+                  name = "<field>name</field>", -- Name of generator
+                  enableEuPercent = <field>enableEuPercent</field>, -- EU percent (0 - 100) at which the machine switches on
+                  disableEuPercent = <field>disableEuPercent</field> -- EU percent (0 - 100) at which the machine switches off
+                }),
+
+            - key: gtnhController
+              label: Direct Controller
+              description: Controller for direct control of the machine
+              fields:
+                - key: address
+                  type: address
+                  label: Machine address
+                  description: Address of adapter which connected to gtnh machine
+
+                - key: name
+                  type: string
+                  label: Name
+                  description: Name of machine
+
+                - key: enableEuPercent
+                  type: integer
+                  min: 0
+                  max: 100
+                  label: Enable EU Percent
+                  description: EU percent at which the machine switches on
+
+                - key: disableEuPercent
+                  type: integer
+                  min: 0
+                  max: 100
+                  label: Disable EU Percent
+                  description: EU percent at which the machine switches off
+
+              objectTemplate: |
+                gtnhController:newFormConfig({ -- Controller for direct control of the machine
+                  address = "<field>address</field>", -- Address of adapter which connected to gtnh machine
+                  name = "<field>name</field>", -- Name of machine
+                  enableEuPercent = <field>enableEuPercent</field>, -- EU percent (0 - 100) at which the machine switches on
+                  disableEuPercent = <field>disableEuPercent</field> -- EU percent (0 - 100) at which the machine switches off
+                }),
 
   configTemplate: |
     local sides = require("sides")
     local colors = require("colors")
-
+    
     local loggerLib = require("lib.logger-lib")
     local discordLoggerHandler = require("lib.logger-handler.discord-logger-handler-lib")
     local fileLoggerHandler = require("lib.logger-handler.file-logger-handler-lib")
-
+    
     local lsc = require("src.lsc")
-
+    
     local gtnhController = require("src.controllers.gtnh-controller")
-    local wirelessRedstoneController = require("src.controllers.wireless-redstone-controller")
     local redstoneController = require("src.controllers.redstone-controller")
     local redstoneBundledController = require("src.controllers.redstone-bundled-controller")
-
+    
     local config = {
       enableAutoUpdate = true, -- Enable auto update on start
-
+    
       logger = loggerLib:newFormConfig({
         name = "<field>name</field>",
         timeZone = <field>timeZone</field>, -- Your time zone
@@ -156,7 +436,7 @@ descriptor:
           })
         }
       }),
-
+    
       lsc = lsc:newFormConfig({
         useMedian = <field>useMedian</field>, -- Use median in calculations
         wirelessMode = <field>wirelessMode</field>, -- Use wireless network mode
@@ -173,8 +453,9 @@ descriptor:
           wirelessStored = <field>wirelessStored</field> -- Total wireless EU line
         },
       }),
-
+    
       generators = { -- List of generators to control 
+        <field>generators</field>
         -- redstoneBundledController:newFormConfig({ -- Controller for control with redstone bundled cable
         --   address = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", -- Address of redstone IO
         --   side = sides.north, -- Side of redstone IO to which connected bundled cable
@@ -183,7 +464,7 @@ descriptor:
         --   enableEuPercent = 75, -- EU percent (0 - 100) at which the generator switches on
         --   disableEuPercent = 98 -- EU percent (0 - 100) at which the generator switches off
         -- }),
-
+    
         -- redstoneController:newFormConfig({ -- Controller for control with redstone cable
         --   address = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", -- Address of redstone IO
         --   side = sides.north, -- Side of redstone IO to which connected redstone
@@ -191,25 +472,18 @@ descriptor:
         --   enableEuPercent = 75, -- EU percent (0 - 100) at which the generator switches on
         --   disableEuPercent = 98 -- EU percent (0 - 100) at which the generator switches off
         -- }),
-
+    
         -- gtnhController:newFormConfig({ -- Controller for direct control of the generator
         --   address = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", -- Address of adapter which connected to gtnh generator
         --   name = "Name", -- Name of generator
         --   enableEuPercent = 20, -- EU percent (0 - 100) at which the generator switches on
         --   disableEuPercent = 98 -- EU percent (0 - 100) at which the generator switches off
         -- }),
-
-        -- wirelessRedstoneController:newFormConfig({ -- Controller for control with wireless redstone (FOR MOD WR-CBE NOT FOR GT WIRELESS COVERS)
-        --   address = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", -- Address of adapter which connected to gtnh generator
-        --   frequency = 100, -- Frequency of wireless redstone (FOR MOD WR-CBE NOT FOR GT WIRELESS COVERS)
-        --   name = "Name", -- Name of generator
-        --   enableEuPercent = 20, -- EU percent (0 - 100) at which the generator switches on
-        --   disableEuPercent = 98 -- EU percent (0 - 100) at which the generator switches off
-        -- })
       },
-
+    
       machines = { -- List of machines to control
-      -- redstoneBundledController:newFormConfig({ -- Controller for control with redstone bundled cable
+        <field>machines</field>
+        -- redstoneBundledController:newFormConfig({ -- Controller for control with redstone bundled cable
         --   address = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", -- Address of redstone IO
         --   side = sides.north, -- Side of redstone IO to which connected bundled cable
         --   color = colors.magenta, -- Color of bundled cable line
@@ -217,7 +491,7 @@ descriptor:
         --   enableEuPercent = 75, -- EU percent (0 - 100) at which the machine switches on
         --   disableEuPercent = 98 -- EU percent (0 - 100) at which the machine switches off
         -- }),
-
+    
         -- redstoneController:newFormConfig({ -- Controller for control with redstone cable
         --   address = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", -- Address of redstone IO
         --   side = sides.north, -- Side of redstone IO to which connected redstone
@@ -225,22 +499,14 @@ descriptor:
         --   enableEuPercent = 75, -- EU percent (0 - 100) at which the machine switches on
         --   disableEuPercent = 98 -- EU percent (0 - 100) at which the machine switches off
         -- }),
-
+    
         -- gtnhController:newFormConfig({ -- Controller for direct control of the machine
         --   address = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", -- Address of adapter which connected to gtnh machine
         --   name = "Name", -- Name of machine
         --   enableEuPercent = 20, -- EU percent (0 - 100) at which the machine switches on
         --   disableEuPercent = 98 -- EU percent (0 - 100) at which the machine switches off
         -- }),
-
-        -- wirelessRedstoneController:newFormConfig({ -- Controller for control with wireless redstone (FOR MOD WR-CBE NOT FOR GT WIRELESS COVERS)
-        --   address = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", -- Address of adapter which connected to gtnh machine
-        --   frequency = 100, -- Frequency of wireless redstone (FOR MOD WR-CBE NOT FOR GT WIRELESS COVERS)
-        --   name = "Name", -- Name of machine
-        --   enableEuPercent = 20, -- EU percent (0 - 100) at which the machine switches on
-        --   disableEuPercent = 98 -- EU percent (0 - 100) at which the machine switches off
-        -- })
       }
     }
-
+    
     return config
