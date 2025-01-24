@@ -8,7 +8,6 @@ local fileLoggerHandler = require("lib.logger-handler.file-logger-handler-lib")
 local lsc = require("src.lsc")
 
 local gtnhController = require("src.controllers.gtnh-controller")
-local wirelessRedstoneController = require("src.controllers.wireless-redstone-controller")
 local redstoneController = require("src.controllers.redstone-controller")
 local redstoneBundledController = require("src.controllers.redstone-bundled-controller")
 
@@ -73,14 +72,6 @@ local config = {
     --   enableEuPercent = 20, -- EU percent (0 - 100) at which the generator switches on
     --   disableEuPercent = 98 -- EU percent (0 - 100) at which the generator switches off
     -- }),
-
-    -- wirelessRedstoneController:newFormConfig({ -- Controller for control with wireless redstone (FOR MOD WR-CBE NOT FOR GT WIRELESS COVERS)
-    --   address = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", -- Address of adapter which connected to gtnh generator
-    --   frequency = 100, -- Frequency of wireless redstone (FOR MOD WR-CBE NOT FOR GT WIRELESS COVERS)
-    --   name = "Name", -- Name of generator
-    --   enableEuPercent = 20, -- EU percent (0 - 100) at which the generator switches on
-    --   disableEuPercent = 98 -- EU percent (0 - 100) at which the generator switches off
-    -- })
   },
 
   machines = { -- List of machines to control
@@ -107,14 +98,6 @@ local config = {
     --   enableEuPercent = 20, -- EU percent (0 - 100) at which the machine switches on
     --   disableEuPercent = 98 -- EU percent (0 - 100) at which the machine switches off
     -- }),
-
-    -- wirelessRedstoneController:newFormConfig({ -- Controller for control with wireless redstone (FOR MOD WR-CBE NOT FOR GT WIRELESS COVERS)
-    --   address = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", -- Address of adapter which connected to gtnh machine
-    --   frequency = 100, -- Frequency of wireless redstone (FOR MOD WR-CBE NOT FOR GT WIRELESS COVERS)
-    --   name = "Name", -- Name of machine
-    --   enableEuPercent = 20, -- EU percent (0 - 100) at which the machine switches on
-    --   disableEuPercent = 98 -- EU percent (0 - 100) at which the machine switches off
-    -- })
   }
 }
 
