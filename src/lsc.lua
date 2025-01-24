@@ -99,6 +99,9 @@ function lsc:new(useMedian, wirelessMode, version, customLines)
   obj.lastWirelessStored = 0
   obj.lastReadWirelessStored = 0
 
+  obj.needMaintenance = false
+  obj.isEnable = false
+
   ---Init
   function obj:init()
     self.proxy = componentDiscoverLib.discoverGtMachine("multimachine.supercapacitor")
@@ -108,6 +111,10 @@ function lsc:new(useMedian, wirelessMode, version, customLines)
   ---Update
   function obj:update()
     self.gtSensorParser:getInformation()
+
+    self.isWorkAllowed = self.proxy.isWorkAllowed()
+
+    self.needMaintenance = self.gtSensorParser:stringHas(17, "Has Problems")
 
     self.inputHistory:pushBack(self.gtSensorParser:getNumber(self.lines[self.version].avgEuIn))
     self.outputHistory:pushBack(self.gtSensorParser:getNumber(self.lines[self.version].avgEuOut))
@@ -146,10 +153,14 @@ function lsc:new(useMedian, wirelessMode, version, customLines)
     self.percent = math.floor(percentRaw * 100) / 100
   end
 
+  ---comment
+  ---@private
   function obj:updateLocal()
     self.capacity = self.gtSensorParser:getNumber(self.lines[self.version].capacity)
   end
 
+  ---comment
+  ---@private
   function obj:updateWireless()
     local capacity = 0
 

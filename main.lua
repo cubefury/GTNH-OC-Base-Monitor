@@ -39,14 +39,15 @@ local localModeTemplate = {
   lines = {
     "Charge: $percent:s,%.2f$% $stored:mu,EU$ / $capacity:mu,EU$",
     "In: &green;$input:mu,EU/t$&white; Out: &red;$output:mu,EU/t$",
-    "@c;?charge >=0 |&green;|&red;?$charge:mu,EU/t$",
+    "@c;?charge >=0|&green;|&red;?$charge:mu,EU/t$",
     "#chargeBar#",
     "?(percent >= 99.9 and charge == 0)|&green;@c;Fully charged|?"..
       "?(percent == 0 and charge == 0)|&red;@c;Completely discharged|?"..
       "?(percent < 99.9 and charge > 0)|Time to full: &green;$chargeLeft:t,2$|?"..
       "?(percent < 99.9 and charge < 0)|Time to empty: &red;$chargeLeft:t,2$|?"..
       "?(percent > 0 and percent < 99.9 and charge == 0)|@c;Idle|?",
-    "",
+    "?isWorkAllowed == false|@c;&&golden; LSC Disabled |?"..
+      "?needMaintenance == true|@c;&&red; Need Maintenance |?",
     "#generatorList#",
     "#generatorList#",
     "#generatorList#",
@@ -64,17 +65,18 @@ local wirelessModeTemplate = {
   },
   lines = {
     "Wireless Charge: $wirelessStored:mu,EU$",
-    "@c;?wirelessCharge >=0 |&green;|&red;?$wirelessCharge:mu,EU/t$",
+    "@c;?wirelessCharge >=0|&green;|&red;?$wirelessCharge:mu,EU/t$",
     "",
     "Charge: $percent:s,%.2f$% $stored:mu,EU$ / $capacity:mu,EU$",
     "#chargeBar#",
-    "@c;?charge >=0 |&green;|&red;?$charge:mu,EU/t$",
+    "@c;?charge >=0|&green;|&red;?$charge:mu,EU/t$",
     "?(percent >= 99.9 and charge == 0)|&green;@c;Fully charged|?"..
       "?(percent == 0 and charge == 0)|&red;@c;Completely discharged|?"..
       "?(percent < 99.9 and charge > 0)|Time to full: &green;$chargeLeft:t,2$|?"..
       "?(percent < 99.9 and charge < 0)|Time to empty: &red;$chargeLeft:t,2$|?"..
       "?(percent > 0 and percent < 99.9 and charge == 0)|@c;Idle|?",
-    "",
+    "?isWorkAllowed == false|@c;&&golden; LSC Disabled |?"..
+      "?needMaintenance == true|@c;&&red; Need Maintenance |?",
     "#generatorList#",
     "#generatorList#",
     "#generatorList#",
@@ -122,6 +124,7 @@ end
 
 local function guiLoop()
   gui:render({
+    isWorkAllowed = config.lsc.isWorkAllowed,
     percent = config.lsc.percent,
     stored = config.lsc.stored,
     capacity = config.lsc.capacity,
@@ -131,6 +134,7 @@ local function guiLoop()
     chargeLeft = config.lsc.chargeLeft,
     wirelessStored = config.lsc.wirelessStored,
     wirelessCharge = config.lsc.wirelessCharge,
+    needMaintenance = config.lsc.needMaintenance,
     generatorStatuses = generatorStatuses
   })
 end
