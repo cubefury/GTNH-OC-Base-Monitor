@@ -52,6 +52,7 @@ local localModeTemplate = {
     "#generatorList#",
     "#generatorList#",
     "#generatorList#",
+    "#generatorList#",
   }
 }
 
@@ -82,8 +83,6 @@ local wirelessModeTemplate = {
     "#generatorList#",
   }
 }
-
-
 
 local function init()
   gui:setTemplate(config.lsc.wirelessMode and wirelessModeTemplate or localModeTemplate)
