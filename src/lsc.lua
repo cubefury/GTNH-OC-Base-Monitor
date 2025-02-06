@@ -1,4 +1,5 @@
 local computer = require("computer")
+local event = require("event")
 
 local listLib = require("lib.list-lib")
 local componentDiscoverLib = require("lib.component-discover-lib")
@@ -66,11 +67,11 @@ function lsc:new(useMedian, wirelessMode, version, customLines)
       capacity = 5,
       avgEuIn = 10,
       avgEuOut = 11,
-      capacitorUHV = 14,
-      capacitorUEV = 15,
-      capacitorUIV = 16,
-      capacitorUMV = 17,
-      wirelessStored = 18
+      capacitorUHV = 15,
+      capacitorUEV = 16,
+      capacitorUIV = 17,
+      capacitorUMV = 18,
+      wirelessStored = 19
     },
     ["2.7"] = {
       storedEu = 2,
@@ -101,6 +102,11 @@ function lsc:new(useMedian, wirelessMode, version, customLines)
 
   obj.needMaintenance = false
   obj.isEnable = false
+
+  obj.notifiedNeedMaintenance = false
+  obj.notifiedLowCharge = false
+
+  obj.lowChargePercent = 10
 
   ---Init
   function obj:init()
@@ -149,17 +155,42 @@ function lsc:new(useMedian, wirelessMode, version, customLines)
 
     self.chargeLeft = math.floor(chargeLeft / 20)
 
-    local percentRaw = self.stored / self.capacity * 100
+    local percentRaw = 0
+
+    if self.capacity ~= 0 then
+      percentRaw = self.stored / self.capacity * 100
+    end
+
     self.percent = math.floor(percentRaw * 100) / 100
+
+    self:notify()
   end
 
-  ---comment
+  ---Notify
+  ---@private
+  function obj:notify()
+    if self.needMaintenance == true and self.notifiedNeedMaintenance == false then
+      event.push("log_warning", "LSC needs maintenance!")
+      self.notifiedNeedMaintenance = true
+    elseif self.needMaintenance == false and self.notifiedNeedMaintenance == true then
+      self.notifiedNeedMaintenance = false
+    end
+
+    if self.percent <= self.lowChargePercent and self.notifiedLowCharge == false then
+      event.push("log_warning", "LSC low charge!")
+      self.notifiedLowCharge = true
+    elseif self.percent >= self.lowChargePercent + 5 == false and self.notifiedLowCharge == true then
+      self.notifiedLowCharge = false
+    end
+  end
+
+  ---Update variables in local mode
   ---@private
   function obj:updateLocal()
     self.capacity = self.gtSensorParser:getNumber(self.lines[self.version].capacity)
   end
 
-  ---comment
+  ---Update variables in wireless mode
   ---@private
   function obj:updateWireless()
     local capacity = 0
