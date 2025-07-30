@@ -15,10 +15,12 @@ Information in this readme was from the original fork, and is inaccurate. README
 
 ## Information
 
-The program is designed to manage energy generators and energy consumers at your base.
-The program is also able to monitor the wireless network in `wirelessMode` mode.
+The program is designed to monitor energy and various materials in AE2 at your base.
+The program is able to monitor the wireless network in `wirelessMode` mode.
 It is also possible to send messages to Discord about out of service situations.
 And there is also the possibility of auto update at startup.
+
+Thanks to Navatusein for the base code which was expanded upon.
 
 #### Controls
 
@@ -53,7 +55,7 @@ Install the basic Open OS on your computer.
 Then run the command to start the installer.
 
 ```shell
-pastebin run ESUAMAGx
+pastebin run uuGgDsDy
 ``` 
 
 Or

@@ -6,6 +6,7 @@ local discordLoggerHandler = require("lib.logger-handler.discord-logger-handler-
 local fileLoggerHandler = require("lib.logger-handler.file-logger-handler-lib")
 
 local lsc = require("src.lsc")
+local meMonitor = require("me.lsc")
 
 local gtnhController = require("src.controllers.gtnh-controller")
 local redstoneController = require("src.controllers.redstone-controller")
@@ -13,6 +14,7 @@ local redstoneBundledController = require("src.controllers.redstone-bundled-cont
 
 local config = {
   enableAutoUpdate = true, -- Enable auto update on start
+  refreshInterval = 10, -- Refresh Interval for program
 
   logger = loggerLib:newFormConfig({
     name = "Base Monitor",

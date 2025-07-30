@@ -1,5 +1,6 @@
 local keyboard = require("keyboard")
 local serialization = require("serialization")
+local event = require("event")
 
 local programLib = require("lib.program-lib")
 local guiLib = require("lib.gui-lib")
@@ -12,8 +13,8 @@ local config = require("config")
 
 local version = require("version")
 
-local repository = "Navatusein/GTNH-OC-LSC-Control"
-local archiveName = "LSCControl"
+local repository = "cubefury/GTNH-OC-Base-Monitor"
+local archiveName = "BaseMonitor"
 
 local program = programLib:new(config.logger, config.enableAutoUpdate, version, repository, archiveName)
 local gui = guiLib:new(program)
@@ -84,12 +85,26 @@ local wirelessModeTemplate = {
 local function init()
   gui:setTemplate(config.lsc.wirelessMode and wirelessModeTemplate or localModeTemplate)
   config.lsc:init()
+  config.meMonitor:init()
 end
 
 local function loop()
   while true do
     config.lsc:update()
+    config.meMonitor:update()
 
+    -- Create update message
+    local msg = {
+      "EU Net: "..config.lsc.wirelessStored,
+      "Avg EU/t: "..config.lsc.wirelessCharge,
+      "Monitored Items/Fluids: "
+    }
+    for k,v in pairs(config.meMonitor.materialList) do
+      msg.insert(k..": "..v.size.." (Change: "..v.change..")")
+    end
+    event.push("log_warning", table.concat(msg, "\n"))
+
+    --[[
     for index, generator in pairs(config.generators) do
       if not generator:getState() and config.lsc.percent < generator.enableEuPercent then
         generator:setState(true)
@@ -113,11 +128,12 @@ local function loop()
 
       generatorStatuses[index + #config.generators] = "[M] "..machine.name..": "..(machine:getState() and "&green;On" or "&red;Off")
     end
-
-    os.sleep(3)
+    ]]
+    os.sleep(config.refreshInterval)
   end
 end
 
+--[[
 local function guiLoop()
   gui:render({
     isWorkAllowed = config.lsc.isWorkAllowed,
@@ -134,9 +150,10 @@ local function guiLoop()
     generatorStatuses = generatorStatuses
   })
 end
+]]
 
 program:registerLogo(logo)
 program:registerInit(init)
 program:registerThread(loop)
-program:registerTimer(guiLoop, math.huge)
+-- program:registerTimer(guiLoop, math.huge)
 program:start()
