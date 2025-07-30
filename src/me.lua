@@ -2,7 +2,6 @@ local component = require("component")
 local event = require("event")
 local computer = require("computer")
 
-local stateMachineLib = require("lib.state-machine-lib")
 local componentDiscoverLib = require("lib.component-discover-lib")
 
 ---@class MeMonitorConfig
