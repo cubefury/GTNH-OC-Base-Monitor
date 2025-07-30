@@ -1,4 +1,8 @@
-# GTNH-OC-LSC-Control
+# GTNH-OC-Base-Monitor
+
+## Note
+
+Information in this readme was from the original fork, and is inaccurate. README WIP.
 
 ## Content
 

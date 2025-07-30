@@ -15,8 +15,8 @@ local config = {
   enableAutoUpdate = true, -- Enable auto update on start
 
   logger = loggerLib:newFormConfig({
-    name = "LSC Control",
-    timeZone = 3, -- Your time zone
+    name = "Base Monitor",
+    timeZone = 8, -- Your time zone
     handlers = {
       discordLoggerHandler:newFormConfig({
         logLevel = "warning",
@@ -33,7 +33,7 @@ local config = {
 
   lsc = lsc:newFormConfig({
     useMedian = false, -- Use median in calculations
-    wirelessMode = false, -- Use wireless network mode
+    wirelessMode = true, -- Use wireless network mode
     version = "2.7", -- Your game version allow ["2.6", "2.7", "custom"]
     customLines = { -- Lines number in SensorInformation for version ["custom"]
       storedEu = 2, -- EU Stored line

@@ -1,7 +1,7 @@
 descriptor:
-  name: LSC Control
-  description: Configuration for program LSC Control
-  repositoryLink: https://github.com/Navatusein/GTNH-OC-LSC-Control
+  name: Base Monitor
+  description: Configuration for program Base Monitor
+  repositoryLink: https://github.com/cubefury/GTNH-OC-Base-Monitor
   fieldGroups:
     - key: logger
       name: Logger
@@ -9,9 +9,9 @@ descriptor:
       fields:
         - key: name
           type: string
-          default: LSC Control
+          default: Base Monitor
           label: Name
-          description: Name witch will be displayed in discord
+          description: Name which will be displayed in discord
 
         - key: timeZone
           type: integer
