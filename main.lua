@@ -133,7 +133,7 @@ local function loop()
   end
 end
 
---[[
+
 local function guiLoop()
   gui:render({
     isWorkAllowed = config.lsc.isWorkAllowed,
@@ -150,10 +150,10 @@ local function guiLoop()
     generatorStatuses = generatorStatuses
   })
 end
-]]
+
 
 program:registerLogo(logo)
 program:registerInit(init)
 program:registerThread(loop)
--- program:registerTimer(guiLoop, math.huge)
+program:registerTimer(guiLoop, math.huge)
 program:start()
