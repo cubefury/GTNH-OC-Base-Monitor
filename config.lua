@@ -6,7 +6,7 @@ local discordLoggerHandler = require("lib.logger-handler.discord-logger-handler-
 local fileLoggerHandler = require("lib.logger-handler.file-logger-handler-lib")
 
 local lsc = require("src.lsc")
-local meMonitor = require("me.lsc")
+local meMonitor = require("src.me")
 
 local gtnhController = require("src.controllers.gtnh-controller")
 local redstoneController = require("src.controllers.redstone-controller")
