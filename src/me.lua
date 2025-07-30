@@ -84,3 +84,5 @@ function meMonitor:new(
   self.__index = self
   return obj
 end
+
+return meMonitor
