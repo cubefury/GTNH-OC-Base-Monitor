@@ -46,11 +46,19 @@ local localModeTemplate = {
       "?(percent > 0 and percent < 99.9 and charge == 0)|@c;Idle|?",
     "?isWorkAllowed == false|@c;&&golden; LSC Disabled |?"..
       "?needMaintenance == true|@c;&&red; Need Maintenance |?",
-    "#generatorList#",
-    "#generatorList#",
-    "#generatorList#",
-    "#generatorList#",
-    "#generatorList#",
+    "",
+    "#logsScrollList#",
+    "#logsScrollList#",
+    "#logsScrollList#",
+    "#logsScrollList#",
+    "#logsScrollList#",
+    "#logsScrollList#",
+    "#logsScrollList#",
+    "#logsScrollList#",
+    "#logsScrollList#",
+    "#logsScrollList#",
+    "#logsScrollList#",
+    "#logsScrollList#",
   }
 }
 
