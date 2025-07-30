@@ -50,10 +50,10 @@ local config = {
     },
   }),
 
-  meMonitor = meMonitor:newFormConfig({
-    meInterfaceAddress = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
-    materialList = {}
-  })
+  meMonitor = me:newFormConfig({
+    meInterfaceAddress = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    materialList = {},
+  }),
 
   generators = { -- List of generators to control 
     -- redstoneBundledController:newFormConfig({ -- Controller for control with redstone bundled cable
