@@ -46,7 +46,16 @@ function meMonitor:new(
 
   ---Update
   function obj:update()
-    self.newItemCount = self:getItemCount()
+    local newItemCount = self:getItemCount()
+    self.updatedItemCount = {}
+    for itemIndex = 1, #self.materialList do
+      local itemName = materialList[itemIndex][3]
+      self.updatedItemCount[itemName] = {
+        amount = newItemCount[itemName].amount, 
+        change = newItemCount[itemName] - self.itemCount[itemName]
+      }
+    end
+    self.itemCount = newItemCount
   end
 
   --Get items and fluids from ae
